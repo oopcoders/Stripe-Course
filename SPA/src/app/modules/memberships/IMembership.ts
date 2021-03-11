@@ -1,6 +1,8 @@
 export interface ICustomerPortal {}
 
-export interface ISession {}
+export interface ISession {
+  sessionId: string;
+}
 
 export interface IMemberShipPlan {
   id: string;
