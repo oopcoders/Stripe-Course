@@ -3,7 +3,7 @@
 	<p class="lead">Use Stripe to create a membership</p>
 	<hr class="my-2">
 	<p>Checkout the different membership plans we have. Click on the View Membership Options button below.</p>
-	<p class="lead" *ngIf="isLoggedIn()">
+	<p class="lead" *ngIf="isLoggedIn() && !isSubscriber()">
 		<button class="btn btn-success btn-lg" role="button" [routerLink]="['/memberships']">
 			<i class="fas fa-store-alt"></i> View Membership Options
 		</button>
@@ -13,9 +13,9 @@
 			Login <i class="fas fa-sign-in-alt"></i>
 		</button>
 	</p>
-	<p class="lead" *ngIf="isLoggedIn()">
+	<p class="lead" *ngIf="isLoggedIn() && isSubscriber()">
 		<button class="btn btn-info btn-lg" role="button" (click)="goToBillingPortal()">
-			Temporary Billing Portal Button
+			Manage Subscription
 		</button>
 	</p>
 </div>

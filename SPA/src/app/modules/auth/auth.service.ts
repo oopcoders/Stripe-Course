@@ -13,6 +13,7 @@ export class AuthService {
   currentUser: IUser = {
     username: null,
     email: null,
+    isSubscriber: false,
   };
   helper = new JwtHelperService();
   baseUrl: string = environment.baseUrl;
@@ -26,6 +27,9 @@ export class AuthService {
         const decodedToken = this.helper.decodeToken(response.token);
         this.currentUser.username = decodedToken.given_name;
         this.currentUser.email = decodedToken.email;
+        if (decodedToken.isSubscriber == 'True') {
+          this.currentUser.isSubscriber = true;
+        }
         return this.currentUser;
       })
     );
@@ -34,6 +38,7 @@ export class AuthService {
   logout() {
     this.currentUser.username = null;
     this.currentUser.email = null;
+    this.currentUser.isSubscriber = false;
     localStorage.removeItem('token');
   }
 }

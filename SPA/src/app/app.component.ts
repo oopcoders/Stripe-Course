@@ -17,10 +17,20 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     const token = localStorage.getItem('token');
 
-    if (token) {
+    const isTokenexpired = this.helper.isTokenExpired(token);
+
+    if (token && !isTokenexpired) {
       const decodedToken = this.helper.decodeToken(token);
       this.authService.currentUser.username = decodedToken.given_name;
       this.authService.currentUser.email = decodedToken.email;
+      if (decodedToken.isSubscriber == 'True') {
+        this.authService.currentUser.isSubscriber = true;
+      }
+    } else {
+      localStorage.removeItem('token');
+      this.authService.currentUser.username = null;
+      this.authService.currentUser.email = null;
+      this.authService.currentUser.isSubscriber = false;
     }
   }
 }

@@ -22,4 +22,8 @@ export class HomeComponent implements OnInit {
   goToBillingPortal() {
     this.membershipService.redirectToCustomerPortal();
   }
+
+  isSubscriber(): boolean {
+    return this.authService.currentUser.isSubscriber;
+  }
 }
