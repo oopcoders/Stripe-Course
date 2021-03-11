@@ -1,4 +1,5 @@
 ﻿using API.Data.Entities;
+using API.Data.Repositories;
 using API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,8 +24,10 @@ namespace API.Controllers
 	{
 		private readonly StripeSettings _stripeSettings;
 		private readonly UserManager<User> _userManager;
-		public PaymentsController(IOptions<StripeSettings> stripeSettings, UserManager<User> userManager)
+		private readonly ISubscriptionRepository _subscriberRepository;
+		public PaymentsController(IOptions<StripeSettings> stripeSettings, UserManager<User> userManager, ISubscriptionRepository subscriberRepository)
 		{
+			_subscriberRepository = subscriberRepository;
 			_stripeSettings = stripeSettings.Value;
 			_userManager = userManager;
 		}
@@ -136,20 +139,20 @@ namespace API.Controllers
 				{
 					var subscription = stripeEvent.Data.Object as Subscription;
 					//Do stuff
-					addSubscriptionToDb(subscription);
+					await addSubscriptionToDb(subscription);
 				}
 				else if (stripeEvent.Type == Events.CustomerSubscriptionUpdated)
 				{
 					var session = stripeEvent.Data.Object as Stripe.Subscription;
 
 					// Update Subsription
-					updateSubscription(session);
+					await updateSubscription(session);
 				}
 				else if (stripeEvent.Type == Events.CustomerCreated)
 				{
 					var customer = stripeEvent.Data.Object as Customer;
 					//Do Stuff
-					addCustomerIdToUser(customer);
+					await addCustomerIdToUser(customer);
 				}
 				// ... handle other event types
 				else
@@ -166,18 +169,71 @@ namespace API.Controllers
 			}
 		}
 
-		private void addCustomerIdToUser(Customer customer)
+		private async Task updateSubscription(Subscription subscription)
 		{
-			Console.WriteLine("addCustomerIdToUser doing stuff");
+			try
+			{
+				var subscriptionFromDb = await _subscriberRepository.GetByIdAsync(subscription.Id);
+				if (subscriptionFromDb != null)
+				{
+					subscriptionFromDb.Status = subscription.Status;
+					subscriptionFromDb.CurrentPeriodEnd = subscription.CurrentPeriodEnd;
+					await _subscriberRepository.UpdateAsync(subscriptionFromDb);
+					Console.WriteLine("Subscription Updated");
+				}
+
+			}
+			catch (System.Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+
+				Console.WriteLine("Unable to update subscription");
+
+			}
+
 		}
 
-		private void addSubscriptionToDb(Subscription subscription)
+		private async Task addCustomerIdToUser(Customer customer)
 		{
-			Console.WriteLine("addSubscriptionToDb doing stuff");
+			try
+			{
+				var userFromDb = await _userManager.FindByEmailAsync(customer.Email);
+
+				if (userFromDb != null)
+				{
+					userFromDb.CustomerId = customer.Id;
+					await _userManager.UpdateAsync(userFromDb);
+					Console.WriteLine("Customer Id added to user ");
+				}
+
+			}
+			catch (System.Exception ex)
+			{
+				Console.WriteLine("Unable to add customer id to user");
+				Console.WriteLine(ex);
+			}
 		}
-		private void updateSubscription(Subscription subscription)
+
+		private async Task addSubscriptionToDb(Subscription subscription)
 		{
-			Console.WriteLine("updateSubscription doing stuff");
+			try
+			{
+				var subscriber = new Subscriber
+				{
+					Id = subscription.Id,
+					CustomerId = subscription.CustomerId,
+					Status = "active",
+					CurrentPeriodEnd = subscription.CurrentPeriodEnd
+				};
+				await _subscriberRepository.CreateAsync(subscriber);
+
+				//You can send the new subscriber an email welcoming the new subscriber
+			}
+			catch (System.Exception ex)
+			{
+				Console.WriteLine("Unable to add new subscriber to Database");
+				Console.WriteLine(ex.Message);
+			}
 		}
 	}
 
