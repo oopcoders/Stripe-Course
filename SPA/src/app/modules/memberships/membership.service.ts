@@ -33,17 +33,19 @@ export class MembershipService {
     this.http
       .post<ISession>(this.baseUrl + 'api/payments/create-checkout-session', {
         priceId: priceId,
+        successUrl: environment.successUrl,
+        failureUrl: environment.cancelUrl,
       })
       .subscribe((session) => {
-        this.redirectToCheckout(session.sessionId);
+        this.redirectToCheckout(session);
       });
   }
 
-  redirectToCheckout(sessionId: string) {
-    const stripe = Stripe('Your publishable stripe key goes here');
+  redirectToCheckout(session: ISession) {
+    const stripe = Stripe(session.publicKey);
 
     stripe.redirectToCheckout({
-      sessionId: sessionId,
+      sessionId: session.sessionId,
     });
   }
 }

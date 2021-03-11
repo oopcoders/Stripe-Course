@@ -2,6 +2,7 @@ export interface ICustomerPortal {}
 
 export interface ISession {
   sessionId: string;
+  publicKey: string;
 }
 
 export interface IMemberShipPlan {

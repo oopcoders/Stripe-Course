@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.Data.Entities;
 using API.Data.Repositories;
+using API.Models;
 using API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -20,6 +21,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Stripe;
 
 namespace API
 {
@@ -28,6 +30,7 @@ namespace API
 		public Startup(IConfiguration configuration)
 		{
 			Configuration = configuration;
+			StripeConfiguration.ApiKey = Configuration.GetValue<string>("StripeSettings:PrivateKey");
 		}
 
 		public IConfiguration Configuration { get; }
@@ -49,6 +52,7 @@ namespace API
 			services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 			services.AddScoped<IJWTTokenGenerator, JWTTokenGenerator>();
 			services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+			services.Configure<StripeSettings>(Configuration.GetSection("StripeSettings"));
 
 			services.AddAuthentication(cfg =>
 			{

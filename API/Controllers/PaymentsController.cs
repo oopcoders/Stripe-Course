@@ -1,5 +1,6 @@
 ﻿using API.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Stripe;
 using Stripe.Checkout;
 using System;
@@ -15,10 +16,10 @@ namespace API.Controllers
 	[ApiController]
 	public class PaymentsController : ControllerBase
 	{
-
-		public PaymentsController()
+		private readonly StripeSettings _stripeSettings;
+		public PaymentsController(IOptions<StripeSettings> stripeSettings)
 		{
-			StripeConfiguration.ApiKey = "Your Test Private Key goes here";
+			_stripeSettings = stripeSettings.Value;
 		}
 
 		[HttpPost("create-checkout-session")]
@@ -26,8 +27,8 @@ namespace API.Controllers
 		{
 			var options = new SessionCreateOptions
 			{
-				SuccessUrl = "http://localhost:4200/success",
-				CancelUrl = "http://localhost:4200/failure",
+				SuccessUrl = req.SuccessUrl,
+				CancelUrl = req.FailureUrl,
 				PaymentMethodTypes = new List<string>
 				{
 					"card",
@@ -51,6 +52,7 @@ namespace API.Controllers
 				return Ok(new CreateCheckoutSessionResponse
 				{
 					SessionId = session.Id,
+					PublicKey = _stripeSettings.PublicKey
 				});
 			}
 			catch (StripeException e)
