@@ -18,12 +18,13 @@ namespace API.Services
 			_config = config;
 
 		}
-		public string GenerateToken(User user)
+		public string GenerateToken(User user, DateTime expDate, bool isSubscriber)
 		{
 			var claims = new List<Claim>
 			{
 				new Claim(JwtRegisteredClaimNames.GivenName , user.UserName),
-				new Claim(JwtRegisteredClaimNames.Email, user.Email)
+				new Claim(JwtRegisteredClaimNames.Email, user.Email),
+				new Claim("isSubscriber", isSubscriber.ToString())
 			};
 
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));
@@ -32,7 +33,7 @@ namespace API.Services
 			var tokenDescriptor = new SecurityTokenDescriptor
 			{
 				Subject = new ClaimsIdentity(claims),
-				Expires = DateTime.Now.AddDays(7),
+				Expires = expDate,
 				SigningCredentials = creds,
 				Issuer = _config["Token:Issuer"],
 				Audience = _config["Token:Audience"]
