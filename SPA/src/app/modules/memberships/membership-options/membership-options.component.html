@@ -1,0 +1,22 @@
+<div class="py-4 text-center">
+	<h2 class="mb-1">Membership Options</h2>
+</div>
+<div class="container mb-2">
+	<div class="row justify-content-md-center mb-2">
+		<div class="card card-pricing text-center px-3 mb-1 w-50" *ngIf="$membership|async as membership">
+			<span class="h6 w-60 mx-auto px-4 py-1 rounded-bottom bg-primary text-white shadow-sm">{{membership.name}}</span>
+			<div class="bg-transparent card-header pt-2 border-0">
+				<h1 class="h1 font-weight-normal text-primary text-center mb-0" data-pricing-value="15"><span
+						  class="price">{{membership.price}}</span><span class="h6 text-muted ml-2"> per month</span></h1>
+			</div>
+			<div class="card-body pt-0">
+				<ul class="list-unstyled mb-2" *ngFor="let feature of membership.features">
+					<li>{{feature}}</li>
+				</ul>
+				<button type="button" [routerLink]="['/checkout']" class="btn btn-outline-secondary mb-3">
+					<i class="fas fa-shopping-cart"></i> Order now</button>
+			</div>
+		</div>
+
+	</div>
+</div>

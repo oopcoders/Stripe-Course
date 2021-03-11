@@ -1,0 +1,30 @@
+<ng-progress id="progressBar" [thick]="true"></ng-progress>
+<ngx-alerts></ngx-alerts>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container">
+		<a class="navbar-brand" [routerLink]="['/home']" routerLinkActive="router-link-active">Stripe Membership Course</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02"
+				aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarColor02" *ngIf="isLoggedIn()">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" [routerLink]="['/memberships']" routerLinkActive="router-link-active">Membership Plans</a>
+				</li>
+
+			</ul>
+		</div>
+
+		<div class="collapse navbar-collapse" id="navbarColor02" *ngIf="!isLoggedIn()">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" [routerLink]="['/login']" routerLinkActive="router-link-active">Login</a>
+				</li>
+
+			</ul>
+		</div>
+	</div>
+
+</nav>

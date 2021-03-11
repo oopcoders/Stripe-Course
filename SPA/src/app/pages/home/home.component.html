@@ -1,0 +1,18 @@
+.<div class="jumbotron">
+	<h1 class="display-3"><a href="https://ngrx.io/docs" target="blank">Stripe Membership Course</a></h1>
+	<p class="lead">Use Stripe to create a membership</p>
+	<hr class="my-2">
+	<p>Checkout the different membership plans we have. Click on the View Membership Options button below.</p>
+	<p class="lead" *ngIf="isLoggedIn()">
+		<button class="btn btn-success btn-lg" role="button" [routerLink]="['/memberships']">
+			<i class="fas fa-store-alt"></i> View Membership Options
+		</button>
+	</p>
+	<p class="lead" *ngIf="!isLoggedIn()">
+		<button class="btn btn-primary btn-lg" role="button" [routerLink]="['/login']">
+			Login <i class="fas fa-sign-in-alt"></i>
+		</button>
+	</p>
+</div>
+
+<app-course-list></app-course-list>

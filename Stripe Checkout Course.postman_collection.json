@@ -1,0 +1,173 @@
+{
+	"info": {
+		"_postman_id": "1a7c47c2-d848-470e-958e-fb26e7abd8d8",
+		"name": "Stripe Checkout Course",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https://localhost:5001/api/payments/products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/api/payments/products",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"payments",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:5001/api/payments/customer-portal",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJnaXZlbl9uYW1lIjoiQ3VzdG9tZXIiLCJlbWFpbCI6ImN1c3RvbWVyQG9vcGNvZGVycy5jb20iLCJuYmYiOjE2MTM2NTc4NjQsImV4cCI6MTYxNDI2MjY2NCwiaWF0IjoxNjEzNjU3ODY0LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MDAxIn0.8hW-3swEhBdqMLGLDJOWBhlf6WOJWHHGpBNibmxHBNE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"returnUrl\": \"http://localhost:4200/home\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/payments/customer-portal",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"payments",
+						"customer-portal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:5001/api/payments/create-checkout-session",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"priceid\": \"price_1ILqkxKewEGHfxQha6CvXgL7\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/payments/create-checkout-session",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"payments",
+						"create-checkout-session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://dashboard.stripe.com/test/settings/billing/portal",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dashboard.stripe.com/test/settings/billing/portal",
+					"protocol": "https",
+					"host": [
+						"dashboard",
+						"stripe",
+						"com"
+					],
+					"path": [
+						"test",
+						"settings",
+						"billing",
+						"portal"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:5001/api/accounts/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"Customer\",\r\n    \"password\": \"password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/accounts/login",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"accounts",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:5001/api/accounts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:5001/api/accounts",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

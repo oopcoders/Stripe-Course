@@ -1,0 +1,25 @@
+<div class="row pt-5">
+	<div class="col-md-6 offset-md-3 mt-4">
+		<h3>Login</h3>
+		<form #f="ngForm" (ngSubmit)="onSubmit(f)">
+			<div class="form-group">
+				<label for="loginUsername">Username</label>
+				<input type="text" name="username" ngModel required #username="ngModel" class="form-control" id="loginUsername"
+					   placeholder="Test username is Customer">
+			</div>
+			<div class="form-group">
+				<label for="loginPassword">Password</label>
+				<input type="password" name="password" ngModel required #password="ngModel" class="form-control" id="loginPassword" autocomplete
+					   placeholder="Test password is password">
+			</div>
+			<button type="submit" [disabled]="f.invalid" class="btn btn-primary">Login <i class="fas fa-sign-in-alt"></i></button>
+		</form>
+	</div>
+	<div class="col-md-6 offset-md-3 mt-4 bg-light border border-white pt-3 pb-3 mt-5">
+		<p>Use Test Username and Password</p>
+		<div>
+			<p>USERNAME : Customer</p>
+			<p>PASSWORD : password</p>
+		</div>
+	</div>
+</div>
