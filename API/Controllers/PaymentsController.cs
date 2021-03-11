@@ -1,4 +1,7 @@
-﻿using API.Models;
+﻿using API.Data.Entities;
+using API.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Stripe;
@@ -6,6 +9,7 @@ using Stripe.Checkout;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -17,9 +21,11 @@ namespace API.Controllers
 	public class PaymentsController : ControllerBase
 	{
 		private readonly StripeSettings _stripeSettings;
-		public PaymentsController(IOptions<StripeSettings> stripeSettings)
+		private readonly UserManager<User> _userManager;
+		public PaymentsController(IOptions<StripeSettings> stripeSettings, UserManager<User> userManager)
 		{
 			_stripeSettings = stripeSettings.Value;
+			_userManager = userManager;
 		}
 
 		[HttpPost("create-checkout-session")]
@@ -68,16 +74,24 @@ namespace API.Controllers
 			}
 		}
 
-		//**WARNING** You want to protect this api and you want to get the customerId from the database.
-		//we will take care of this in the next video
+		[Authorize]
 		[HttpPost("customer-portal")]
 		public async Task<IActionResult> CustomerPortal([FromBody] CustomerPortalRequest req)
 		{
+
 			try
 			{
+				ClaimsPrincipal principal = HttpContext.User as ClaimsPrincipal;
+				var claim = principal.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname");
+				var userFromDb = await _userManager.FindByNameAsync(claim.Value);
+
+				if (userFromDb == null)
+				{
+					return BadRequest();
+				}
 				var options = new Stripe.BillingPortal.SessionCreateOptions
 				{
-					Customer = "The stripe customer Id goes here",
+					Customer = userFromDb.CustomerId,
 					ReturnUrl = req.ReturnUrl,
 				};
 				var service = new Stripe.BillingPortal.SessionService();
