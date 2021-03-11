@@ -1,4 +1,6 @@
-export interface ICustomerPortal {}
+export interface ICustomerPortal {
+  url: string;
+}
 
 export interface ISession {
   sessionId: string;

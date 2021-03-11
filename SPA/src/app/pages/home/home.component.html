@@ -13,6 +13,11 @@
 			Login <i class="fas fa-sign-in-alt"></i>
 		</button>
 	</p>
+	<p class="lead" *ngIf="isLoggedIn()">
+		<button class="btn btn-info btn-lg" role="button" (click)="goToBillingPortal()">
+			Temporary Billing Portal Button
+		</button>
+	</p>
 </div>
 
 <app-course-list></app-course-list>

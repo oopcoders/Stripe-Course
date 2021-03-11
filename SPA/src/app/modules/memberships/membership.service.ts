@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { IMemberShipPlan, ISession } from './IMembership';
+import { ICustomerPortal, IMemberShipPlan, ISession } from './IMembership';
 
 declare const Stripe;
 
@@ -47,5 +47,26 @@ export class MembershipService {
     stripe.redirectToCheckout({
       sessionId: session.sessionId,
     });
+  }
+  redirectToCustomerPortal() {
+    this.http
+      .post<ICustomerPortal>(
+        this.baseUrl + 'api/payments/customer-portal',
+        { returnUrl: environment.homeUrl },
+        this.getHttpOptions()
+      )
+      .subscribe((data) => {
+        window.location.href = data.url;
+      });
+  }
+
+  getHttpOptions() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: 'Bearer ' + localStorage.getItem('token'),
+      }),
+    };
+
+    return httpOptions;
   }
 }
