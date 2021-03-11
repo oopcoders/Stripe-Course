@@ -8,6 +8,7 @@ using Stripe;
 using Stripe.Checkout;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -114,6 +115,69 @@ namespace API.Controllers
 				});
 			}
 
+		}
+
+		// POST api/<PaymentsController>/webhook
+		[HttpPost("webhook")]
+		public async Task<IActionResult> WebHook()
+		{
+			var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+
+			try
+			{
+				var stripeEvent = EventUtility.ConstructEvent(
+				 json,
+				 Request.Headers["Stripe-Signature"],
+				 _stripeSettings.WHSecret
+			   );
+
+				// Handle the event
+				if (stripeEvent.Type == Events.CustomerSubscriptionCreated)
+				{
+					var subscription = stripeEvent.Data.Object as Subscription;
+					//Do stuff
+					addSubscriptionToDb(subscription);
+				}
+				else if (stripeEvent.Type == Events.CustomerSubscriptionUpdated)
+				{
+					var session = stripeEvent.Data.Object as Stripe.Subscription;
+
+					// Update Subsription
+					updateSubscription(session);
+				}
+				else if (stripeEvent.Type == Events.CustomerCreated)
+				{
+					var customer = stripeEvent.Data.Object as Customer;
+					//Do Stuff
+					addCustomerIdToUser(customer);
+				}
+				// ... handle other event types
+				else
+				{
+					// Unexpected event type
+					Console.WriteLine("Unhandled event type: {0}", stripeEvent.Type);
+				}
+				return Ok();
+			}
+			catch (StripeException e)
+			{
+				Console.WriteLine(e.StripeError.Message);
+				return BadRequest();
+			}
+		}
+
+		private void addCustomerIdToUser(Customer customer)
+		{
+			Console.WriteLine("addCustomerIdToUser doing stuff");
+		}
+
+		private void addSubscriptionToDb(Subscription subscription)
+		{
+			Console.WriteLine("addSubscriptionToDb doing stuff");
+		}
+		private void updateSubscription(Subscription subscription)
+		{
+			Console.WriteLine("updateSubscription doing stuff");
 		}
 	}
 
