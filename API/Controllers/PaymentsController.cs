@@ -1,5 +1,6 @@
 ﻿using API.Models;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,27 @@ namespace API.Controllers
 	[ApiController]
 	public class PaymentsController : ControllerBase
 	{
+
+		//https://localhost:5001/api/payments/products
+		[HttpGet("products")]
+		public IActionResult Products()
+		{
+
+			StripeConfiguration.ApiKey = "Your Top Secret Stripe Secret Key Goes Here";
+
+			var options = new ProductListOptions
+			{
+				Limit = 3,
+			};
+			var service = new ProductService();
+			StripeList<Product> products = service.List(
+			  options
+			);
+
+
+			return Ok(products);
+		}
+
 		// POST api/<PaymentsController> Create Session
 		[HttpPost("create-checkout-session")]
 		public IActionResult CreateCheckoutSession([FromBody] CreateCheckoutSessionRequest req)
