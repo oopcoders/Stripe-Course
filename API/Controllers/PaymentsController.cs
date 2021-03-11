@@ -68,11 +68,38 @@ namespace API.Controllers
 			}
 		}
 
+		//**WARNING** You want to protect this api and you want to get the customerId from the database.
+		//we will take care of this in the next video
 		[HttpPost("customer-portal")]
-		public IActionResult CustomerPortal([FromBody] CustomerPortalRequest req)
+		public async Task<IActionResult> CustomerPortal([FromBody] CustomerPortalRequest req)
 		{
-			//Snippet Goes here
-			return Ok();
+			try
+			{
+				var options = new Stripe.BillingPortal.SessionCreateOptions
+				{
+					Customer = "The stripe customer Id goes here",
+					ReturnUrl = req.ReturnUrl,
+				};
+				var service = new Stripe.BillingPortal.SessionService();
+				var session = await service.CreateAsync(options);
+
+				return Ok(new
+				{
+					url = session.Url
+				});
+			}
+			catch (StripeException e)
+			{
+				Console.WriteLine(e.StripeError.Message);
+				return BadRequest(new ErrorResponse
+				{
+					ErrorMessage = new ErrorMessage
+					{
+						Message = e.StripeError.Message,
+					}
+				});
+			}
+
 		}
 	}
 
